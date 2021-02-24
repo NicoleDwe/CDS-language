@@ -64,5 +64,5 @@ For example you could run:
 python3 collocation_nd.py -p ../data/100_english_novels/corpus/ -k "season" -w 1
 ```
 
-5. When the script is done, you will get a message and the output will be saved in output/output_word_counts.csv
+5. When the script is done, you will get a message and the output will be saved in output/keyword_collocation.csv
 
