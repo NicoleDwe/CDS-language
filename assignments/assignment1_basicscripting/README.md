@@ -24,7 +24,7 @@ This assignment is designed to test that you have a understanding of:
 
 ## Running the script
 
-To run the script `word_counts_nd.p`, it is best to create the virtual environment using the bash script `create_venv.sh` and the requirements specified in `requirements.txt`. Further, a corpus of 100 english novels can be found in the `data` directory. The output (csv file) will be saved in a `output` directory. Run the following commands in your terminal to run the script:
+To run the script `word_counts_nd.py`, it is best to create the virtual environment using the bash script `create_venv.sh` and the requirements specified in `requirements.txt`. Further, a corpus of 100 english novels can be found in the `data` directory (which is just above the `assignment1_basicscripting` directory). The output (csv file) will be saved in a `output` directory. Run the following commands in your terminal to run the script:
 
 1. Clone the repository and save as nicole-cds-language: 
 
@@ -48,8 +48,8 @@ source venv_assignment1/bin/activate
 4. Run the script, while specifying the path to the corpus of texts:`
 
 ```bash
-python3 word_counts_nd.py -p data/100_english_novels/corpus/
+python3 word_counts_nd.py -p ../data/100_english_novels/corpus/
 ```
 
-5. When the script is done, you will get a message and the output will be saved in output/output_word_counts.csv
+5. When the script is done, you will get a message and the output will be saved in `output/output_word_counts.csv`.
 
