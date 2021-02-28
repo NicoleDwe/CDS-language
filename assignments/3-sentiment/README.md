@@ -86,7 +86,7 @@ __1-week-average sentiment scores__
 
 __1-month-average sentiment scores__
 
-![](https://github.com/nicole-dwenger/cds-language/blob/main/assignments/3-sentiment/output/1-week_sentiment.png?raw=true)
+![](https://github.com/nicole-dwenger/cds-language/blob/main/assignments/3-sentiment/output/1-month_sentiment.png?raw=true)
 
 
 In both plots it seems like the average sentiment scores are over time above 0, meaning positive and rarely negative. As these are newspaper headlines I actually expected a lot of them to be negative. However, considering the textblob method of only looking at adjectives, it might be that a lot of the headlines either contained adjectives that are not in the dictionary or no adjectives at all. However, it might also be that my intuition is wrong, and a lot of the headlines are actually positive. Generally, as expected the 1-week-average plot shows more variation than the 1-month average. Lastly, there is a spike at the beginning in both of the plots, which might be due to the running-mean calculations. 
