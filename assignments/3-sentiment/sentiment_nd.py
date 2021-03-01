@@ -32,11 +32,18 @@ def smoothed_sentiment_plot(date_window, text_date_window, date_sentiment_data):
     smoothed_data = date_sentiment_data.sort_index().rolling(date_window).mean()
     # create plot with title, xlablels turned 45 degrees, ylabel and smoothed_data
     plt.figure()
+    # plot the data
+    plt.plot(smoothed_data, label = f"{text_date_window} rolling average") 
+    # title of plot
     plt.title(f"Sentiment over time with a {text_date_window} rolling average")
+    # x-axis label
     plt.xlabel("Date")
+    # rotation of x-labels
     plt.xticks(rotation=45)
+    # y-axis label
     plt.ylabel("Sentiment score")
-    plt.plot(smoothed_data) 
+    # add legend
+    plt.legend()
     # save figure as png in output
     plt.savefig(os.path.join("output", f"{text_date_window}_sentiment.png"), bbox_inches='tight')
     
@@ -97,9 +104,12 @@ def main():
         {"sentiment": sentiment_scores}, # sentiment score column
         index = pd.to_datetime(data["publish_date"], format='%Y%m%d', errors='ignore')) # date index
     
+    # calculate average sentiment scores per day
+    daily_sentiment_df = date_sentiment_df.resample('1d').mean()
+    
     # apply smoothed_sentiment_plot function, to create and save plots in output
-    smoothed_sentiment_plot("7d", "1-week", date_sentiment_df) # 1-week average
-    smoothed_sentiment_plot("30d", "1-month", date_sentiment_df) # 1 month average
+    smoothed_sentiment_plot("7d", "1-week", daily_sentiment_df) # 1-week average
+    smoothed_sentiment_plot("30d", "1-month", daily_sentiment_df) # 1 month average
     
     # send message
     print("Done! Csv file and plots are in output directory.\n ")
