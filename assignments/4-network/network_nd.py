@@ -113,15 +113,13 @@ class Network_Analysis:
         
         # draw graph with the filtered edgelist
         graph = nx.from_pandas_edgelist(filtered_edges_df, "nodeA", "nodeB", ["weight"])
-        # define size of figure
-        plt.figure(figsize=(15,15))
         
         # defining layout as spring layout, with increased distance between nodes
         spring_layout = nx.spring_layout(graph, k=math.sqrt(graph.order()))
         # drawing nodes, edges and labels
         nx.draw_networkx_nodes(graph, spring_layout, node_size=20, node_color="steelblue", alpha = 0.7)
         nx.draw_networkx_edges(graph, spring_layout, alpha = 0.3)
-        nx.draw_networkx_labels(graph, spring_layout, font_size=9, verticalalignment="bottom", font_weight="semibold")
+        nx.draw_networkx_labels(graph, spring_layout, font_size=9, verticalalignment="bottom")
         
         # save the plot
         plt.savefig(f"viz/network_{self.data_name}_{self.min_edgeweight}.png", dpi=300, bbox_inches="tight")
