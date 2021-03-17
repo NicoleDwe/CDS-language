@@ -24,6 +24,7 @@ import pandas as pd
 # network
 import networkx as nx
 import matplotlib.pyplot as plt
+import math
 
 
 #### MAIN FUNCTION ####
@@ -32,8 +33,18 @@ def main():
     
     # define input parameters
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--input_file", required=False, help="path to input file", default="../data/weighted_edgelist_realnews.csv")
-    ap.add_argument("-m", "--min_edgeweight", required=False, help="minimum edge weight of interest", default=500, type=int)
+    # input option for filepath to the input file, with default of realnews data
+    ap.add_argument("-i", "--input_file", 
+                    required=False, 
+                    help="path to input file", 
+                    default="../data/weighted_edgelist_realnews.csv")
+    # input option for minimum edgeweight, with default of 500
+    ap.add_argument("-m", "--min_edgeweight", 
+                    required=False, 
+                    help="minimum edge weight of interest", 
+                    default=500, 
+                    type=int)
+    # get the input
     args = vars(ap.parse_args())
     
     # save input parameters
@@ -41,13 +52,13 @@ def main():
     min_edgeweight = args["min_edgeweight"]
     
     # run network analysis
-    Network_analysis(input_file, min_edgeweight)
+    Network_Analysis(input_file, min_edgeweight)
     
     
 
 #### BUNDLED UP NETWORK ANALYSIS CLASS ####
 
-class Network_analysis:
+class Network_Analysis:
     
     
     def __init__(self, input_file, min_edgeweight): 
@@ -60,17 +71,22 @@ class Network_analysis:
      
         # start message
         print("\nInitialising network analysis...")
+       
+        # get the name of the data
+        file_name = os.path.basename(input_file) 
+        self.data_name = os.path.splitext(file_name)[0] 
         
         # create output directories
         self.create_output_directory("output")
         self.create_output_directory("viz")
         
         # load data
-        weighted_edgelist = pd.read_csv(input_file)
+        self.weighted_edgelist = pd.read_csv(input_file)
+        # define minimum edgeweig
+        self.min_edgeweight = min_edgeweight
         
         # create and save network graph 
-        network_graph = self.network_graph(weighted_edgelist, min_edgeweight)
-        
+        network_graph = self.network_graph()
         # calculate and save centraliy measures
         centrality_measures = self.centrality_measures(network_graph)
         
@@ -86,21 +102,30 @@ class Network_analysis:
             os.mkdir(directory_name)
     
     
-    def network_graph(self, weighted_edges_df, min_edgeweight):
+    def network_graph(self):
         """
         Creating a network graph and saving it as a png file
         Input: list of all paris and their weight 
         Output: network figure saved in viz directory, and returned to be used for centrality measures
         """
         # filter based on minimum edge weight
-        filtered_edges_df = weighted_edges_df[weighted_edges_df["weight"] > min_edgeweight]
-        # create graph using nx package
-        network_graph = nx.from_pandas_edgelist(filtered_edges_df, "nodeA", "nodeB", ["weight"])
-        pos = nx.nx_agraph.graphviz_layout(network_graph, prog = "neato")
-        nx.draw(network_graph, pos, with_labels=True, node_size=20, font_size=10)
-        # saving network graph 
-        plt.savefig("viz/network.png", dpi=300, bbox_inches="tight")
-        return network_graph
+        filtered_edges_df = self.weighted_edgelist[self.weighted_edgelist["weight"] > self.min_edgeweight]
+        
+        # draw graph with the filtered edgelist
+        graph = nx.from_pandas_edgelist(filtered_edges_df, "nodeA", "nodeB", ["weight"])
+        # define size of figure
+        plt.figure(figsize=(15,15))
+        
+        # defining layout as spring layout, with increased distance between nodes
+        spring_layout = nx.spring_layout(graph, k=math.sqrt(graph.order()))
+        # drawing nodes, edges and labels
+        nx.draw_networkx_nodes(graph, spring_layout, node_size=20, node_color="steelblue", alpha = 0.7)
+        nx.draw_networkx_edges(graph, spring_layout, alpha = 0.3)
+        nx.draw_networkx_labels(graph, spring_layout, font_size=9, verticalalignment="bottom", font_weight="semibold")
+        
+        # save the plot
+        plt.savefig(f"viz/network_{self.data_name}_{self.min_edgeweight}.png", dpi=300, bbox_inches="tight")
+        return graph
         
     
     def centrality_measures(self, network_graph):
@@ -110,6 +135,7 @@ class Network_analysis:
         Output: dataframe saved as csv file in output directory
         """
         # calcualte the three relevant metrics
+        nodes = nx.nodes(network_graph)
         degree_metric = nx.degree_centrality(network_graph)
         betweenness_metric = nx.betweenness_centrality(network_graph)
         eigenvector_metric = nx.eigenvector_centrality(network_graph)
@@ -117,10 +143,10 @@ class Network_analysis:
         centrality_df = pd.DataFrame({
             'degree':pd.Series(degree_metric),
             'betweenness':pd.Series(betweenness_metric),
-            'eigenvector':pd.Series(eigenvector_metric)  
+            'eigenvector':pd.Series(eigenvector_metric),
         }).sort_values(['degree', 'betweenness', 'eigenvector'], ascending=False)
         # saving the csv file
-        centrality_df.to_csv("output/centrality_measures.csv")
+        centrality_df.to_csv(f"output/centrality_measures_{self.data_name}_{self.min_edgeweight}.csv")
         
         
 #### DEFAULT BEHAVIOUR ####
