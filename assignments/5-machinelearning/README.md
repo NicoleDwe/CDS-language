@@ -78,7 +78,7 @@ The model had a perplexity value of -7.68 and a coherence measure of 0.42. These
 - Topic 14: Psychology, Neuroscience, Cognition 
 
 
-![](https://github.com/nicole-dwenger/cds-language/blob/main/assignments/5-machinelearing/output/wordclouds.jpg)
+![word-clouds](https://github.com/nicole-dwenger/cds-language/blob/main/assignments/5-machinelearning/output/wordclouds.jpg)
 
 Overall, I feel like even though I could give most of the topics some name, some of the topics are not really clear. This could maybe be improven by removing some other words which occur across all categories or splitting it up into fewer/more topics. 
 
